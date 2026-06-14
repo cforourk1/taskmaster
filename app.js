@@ -1,8 +1,21 @@
 import express from "express";
+import morgan from "morgan";
+import tasksRouter from "#api/tasks";
+import usersRouter from "#api/users";
+import getUserFromToken from "#middleware/getUserFromToken";
 const app = express();
 export default app;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
+app.use(getUserFromToken);
+app.use("/users", usersRouter);
+app.use("/tasks", tasksRouter);
+
 app.use((err, req, res, next) => {
+  // A switch statement can be used instead of if statements
+  // when multiple cases are handled the same way.
   switch (err.code) {
     // Invalid type
     case "22P02":
